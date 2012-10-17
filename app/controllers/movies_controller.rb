@@ -7,7 +7,27 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    @ratings = params[:ratings]
+     if (@ratings != nil) then
+     @checkedBox = params[:ratings]
+     @checked = @checkedBox.keys
+     #@checked = ["R", "G"]
+     @all_ratings = Movie.getRatingsList
+     else
+     @all_ratings = Movie.getRatingsList
+     @checked = @all_ratings
+     end
+     id = params[:id]
+     
+     if (id.eql?("by-title")) then
+     @movies = Movie.where(:rating => @checked).order("title ASC")
+     @bytitle = "hilite"
+     elsif (id.eql?('by-date')) then
+     @movies = Movie.where(:rating => @checked).order("release_date ASC")
+     @bydate = "hilite"
+     else 
+     @movies = Movie.where(:rating => @checked)
+     end 
   end
 
   def new
